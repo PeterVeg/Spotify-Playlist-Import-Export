@@ -26,4 +26,4 @@ Fonctionnalités principales :
 - Récupérez votre Client ID et Client Secret (⚠️ ne les partagez jamais publiquement).
 
 3. **Lancer le script et renseignez les informations**
-4. 
+   
