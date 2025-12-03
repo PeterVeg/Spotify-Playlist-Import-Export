@@ -1,4 +1,4 @@
-﻿Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Web
 
@@ -765,12 +765,21 @@ $btnAuth.Add_Click({
         $lblStatus.ForeColor = [System.Drawing.Color]::Orange
         
         # Ouvrir le navigateur après un court délai
+        $script:authUrl = $authUrl  # Stocker dans une variable de script
         $openBrowserTimer = New-Object System.Windows.Forms.Timer
         $openBrowserTimer.Interval = 500
         $openBrowserTimer.Add_Tick({
-            $openBrowserTimer.Stop()
-            Start-Process $authUrl
-            $instructionForm.BringToFront()
+            param($sender, $e)
+            $sender.Stop()
+            $sender.Dispose()
+            if (-not [string]::IsNullOrEmpty($script:authUrl)) {
+                Start-Process $script:authUrl
+                Start-Sleep -Milliseconds 200
+                if ($script:instructionForm -ne $null -and -not $script:instructionForm.IsDisposed) {
+                    $script:instructionForm.BringToFront()
+                    $script:instructionForm.Activate()
+                }
+            }
         })
         $openBrowserTimer.Start()
         
@@ -788,11 +797,14 @@ $btnAuth.Add_Click({
                 # Vérifier si le contenu a changé et contient "code="
                 if ($clipboard -ne $previousClipboard -and $clipboard -match 'code=([^&\s]+)') {
                     $code = $matches[1]
-                    $script:clipboardTimer.Stop()
-                    $script:clipboardTimer.Dispose()
+                    
+                    if ($script:clipboardTimer -ne $null) {
+                        $script:clipboardTimer.Stop()
+                        $script:clipboardTimer.Dispose()
+                    }
                     
                     # Fermer la fenêtre d'instructions
-                    if ($script:instructionForm -ne $null) {
+                    if ($script:instructionForm -ne $null -and -not $script:instructionForm.IsDisposed) {
                         $script:instructionForm.Close()
                         $script:instructionForm.Dispose()
                     }
@@ -815,6 +827,8 @@ $btnAuth.Add_Click({
                     catch {
                         $lblStatus.Text = "Erreur lors de l'échange du code: $($_.Exception.Message)"
                         $lblStatus.ForeColor = [System.Drawing.Color]::Red
+                        [System.Windows.Forms.MessageBox]::Show("Erreur d'authentification:`n$($_.Exception.Message)", "Erreur", 
+                            [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
                     }
                 }
                 
@@ -827,9 +841,12 @@ $btnAuth.Add_Click({
         
         # Gérer la fermeture manuelle de la fenêtre d'instructions
         $instructionForm.Add_FormClosing({
-            if ($script:clipboardTimer -ne $null) {
-                $script:clipboardTimer.Stop()
-                $script:clipboardTimer.Dispose()
+            if ($script:clipboardTimer -ne $null -and -not $script:clipboardTimer.Disposed) {
+                try {
+                    $script:clipboardTimer.Stop()
+                    $script:clipboardTimer.Dispose()
+                }
+                catch {}
                 $lblStatus.Text = "Authentification annulée"
                 $lblStatus.ForeColor = [System.Drawing.Color]::FromArgb(179, 179, 179)
             }
@@ -840,6 +857,8 @@ $btnAuth.Add_Click({
     catch {
         $lblStatus.Text = "Erreur: $($_.Exception.Message)"
         $lblStatus.ForeColor = [System.Drawing.Color]::Red
+        [System.Windows.Forms.MessageBox]::Show("Erreur lors du lancement de l'authentification:`n$($_.Exception.Message)", "Erreur", 
+            [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
     }
 })
 
