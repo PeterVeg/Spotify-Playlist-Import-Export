@@ -14,10 +14,11 @@ Fonctionnalités principales :
 
 ## 🚀 Installation
 
-1. **Cloner le dépôt :**
+1. **Télécharger le RAW File :**
+Ouvrir une console Powershell, allez dans le dossier où vous avez téléchargé le fichier.
    ```bash
-   git clone https://github.com/PeterVeg/SpotifyPlaylistExport.git
-   cd SpotifyPlaylistExport
+  sl .\Downloads\
+  .\PlaylistManagerGUI.ps1
 
 2. **Configurer l'application Spotify :**
 - Connectez-vous sur Spotify for Developers (https://developer.spotify.com/).
@@ -26,4 +27,15 @@ Fonctionnalités principales :
 - Récupérez votre Client ID et Client Secret (⚠️ ne les partagez jamais publiquement).
 
 3. **Lancer le script et renseignez les informations**
-   
+- Renseignez les ID.
+- Entrez un nom de profil
+- Sauvegardez
+- Chargez la playlist
+- Exportez
+- Pour importez, avec votre nouveau compte refaites la manip 2.
+- Entrez votre nouveau profil
+- Sauvegardez
+- Importez vos playlists
+
+  Les playlists sont éditable avec Google sheet ou Excel ou notepad (par exemple pour changer le nom de la playlist)
+  
