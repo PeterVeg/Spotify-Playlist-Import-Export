@@ -16,11 +16,23 @@ Fonctionnalités principales :
 
 1. **Télécharger le RAW File :**
 Ouvrir une console Powershell, allez dans le dossier où vous avez téléchargé le fichier.
-   ```bash
-  sl .\Downloads\
-  .\PlaylistManagerGUI.ps1
 
-2. **Configurer l'application Spotify :**
+```powershell
+# Pour aller dans le dossier Downloads
+sl .\Downloads\
+```
+
+```powershell
+# Lancer un script PowerShell
+.\PlaylistManagerGUI.ps1
+```
+```powershell
+# Dans le cas où les scripts sont bloqués par défaut
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\PlaylistManagerGUI.ps1
+```
+
+3. **Configurer l'application Spotify :**
 - Connectez-vous sur Spotify for Developers (https://developer.spotify.com/).
 - Créez une application (ex. SpotifyExport).
 - Renseignez une URL de callback (ex. https://example.org/callback), ça n'a pas d'importance.
